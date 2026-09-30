@@ -71,7 +71,7 @@ export async function GET(event: RequestEvent) {
             type: "OrderedCollectionPage",
             first: id + "/followers?page=1",
             ...(intPage > 1 ? { prev: `${id}/followers?page=${intPage - 1}` } : {}),
-            ...(hasNextPage ? { next: `${id}/outbox?page=${intPage + 1}` } : {}),
+            ...(hasNextPage ? { next: `${id}/followers?page=${intPage + 1}` } : {}),
             partOf: id + "/followers",
             totalItems: followers.totalItems,
         orderedItems: followers.items.filter(f => f.expand?.follower !== undefined).map<string>(f => f.expand!.follower.iri)
