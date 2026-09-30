@@ -279,7 +279,7 @@ func assembleActor(app core.App, ctx context.Context, dbActor *core.Record, incl
 }
 
 // Fetches an AP actor and optionally followers/following collections
-func fetchRemoteActor(app core.App, ctx context.Context, iri string, includeFollows bool) (*pub.Actor, *pub.OrderedCollection, *pub.OrderedCollection, error) {
+func fetchRemoteActor(app core.App, ctx context.Context, iri string, includeFollows bool) (*pub.Actor, *pub.OrderedCollectionPage, *pub.OrderedCollectionPage, error) {
 	encryptionKey := os.Getenv("POCKETBASE_ENCRYPTION_KEY")
 	if len(encryptionKey) == 0 {
 		return nil, nil, nil, fmt.Errorf("POCKETBASE_ENCRYPTION_KEY not set")
@@ -354,7 +354,7 @@ func fetchRemoteActor(app core.App, ctx context.Context, iri string, includeFoll
 		return nil, nil, nil, fmt.Errorf("actor validation failed for %s: %w", iri, err)
 	}
 
-	var followers, following pub.OrderedCollection
+	var followers, following pub.OrderedCollectionPage
 
 	if includeFollows {
 		// Fetch followers
@@ -371,7 +371,11 @@ func fetchRemoteActor(app core.App, ctx context.Context, iri string, includeFoll
 	return &pubActor, &followers, &following, nil
 }
 
-func FetchCollection(app core.App, ctx context.Context, collectionURL string) (*pub.OrderedCollection, error) {
+// newHTTPClient is replaced in tests.
+var newHTTPClient = util.SafeHTTPClient
+
+// FetchCollection fetches a collection or one of its pages.
+func FetchCollection(app core.App, ctx context.Context, collectionURL string) (*pub.OrderedCollectionPage, error) {
 	encryptionKey := os.Getenv("POCKETBASE_ENCRYPTION_KEY")
 	if len(encryptionKey) == 0 {
 		return nil, fmt.Errorf("POCKETBASE_ENCRYPTION_KEY not set")
@@ -425,7 +429,7 @@ func FetchCollection(app core.App, ctx context.Context, collectionURL string) (*
 		}
 	}
 
-	client := util.SafeHTTPClient()
+	client := newHTTPClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("collection fetch failed for %s: %v", collectionURL, err)
@@ -438,10 +442,62 @@ func FetchCollection(app core.App, ctx context.Context, collectionURL string) (*
 	}
 	defer resp.Body.Close()
 
-	var collection pub.OrderedCollection
+	var collection pub.OrderedCollectionPage
 	if err := json.NewDecoder(resp.Body).Decode(&collection); err != nil {
 		return nil, err
 	}
 
 	return &collection, nil
+}
+
+// maxCollectionPages bounds the pages FetchCollectionPage walks.
+const maxCollectionPages = 50
+
+// FetchCollectionPage returns page n (1-based) of a remote collection. It
+// follows the collection's first and next links, as servers page
+// differently (Mastodon ?page=N, GoToSocial max_id).
+func FetchCollectionPage(app core.App, ctx context.Context, collectionURL string, n int) (*pub.OrderedCollectionPage, error) {
+	n = max(n, 1)
+	if n > maxCollectionPages {
+		return nil, fmt.Errorf("page %d exceeds %d", n, maxCollectionPages)
+	}
+
+	page, err := FetchCollection(app, ctx, collectionURL)
+	if err != nil {
+		return nil, err
+	}
+	total := page.TotalItems
+
+	// Older wanderer versions answer with the first page itself.
+	link, i := page.First, 1
+	if page.OrderedItems != nil {
+		link, i = page.Next, 2
+	}
+	for ; i <= n; i++ {
+		if link == nil {
+			return &pub.OrderedCollectionPage{TotalItems: total}, nil
+		}
+		if page, err = FetchCollection(app, ctx, collectionLink(collectionURL, link, i)); err != nil {
+			return nil, err
+		}
+		link = page.Next
+	}
+	page.TotalItems = total
+	return page, nil
+}
+
+// collectionLink resolves a first or next link. A link off the collection
+// falls back to ?page=n; older wanderer versions pointed followers' next at
+// the outbox.
+func collectionLink(collectionURL string, link pub.Item, n int) string {
+	fallback := fmt.Sprintf("%s?page=%d", collectionURL, n)
+	base, err := url.Parse(collectionURL)
+	if err != nil {
+		return fallback
+	}
+	target, err := base.Parse(link.GetLink().String())
+	if err != nil || target.Host != base.Host || target.Path != base.Path {
+		return fallback
+	}
+	return target.String()
 }

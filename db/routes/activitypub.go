@@ -199,7 +199,7 @@ func ActivitypubActorFollow(e *core.RequestEvent) error {
 	if url == "" {
 		return e.BadRequestError("unknown type: "+followType, nil)
 	}
-	collection, err := federation.FetchCollection(e.App, ctx, fmt.Sprintf("%s?page=%d", url, intPage))
+	collection, err := federation.FetchCollectionPage(e.App, ctx, url, intPage)
 	if err != nil {
 		if errors.Is(err, federation.ErrProfilePrivate) {
 			return e.JSON(http.StatusNotFound, map[string]any{"error": "profile is private"})

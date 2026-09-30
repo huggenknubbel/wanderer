@@ -604,6 +604,9 @@ func ObjectFromTrail(app core.App, trail *core.Record, mentions *pub.ItemCollect
 		Longitude: trail.GetFloat("lon"),
 	}
 	trailObject.AttributedTo = pub.IRI(trailAuthor.GetString("iri"))
+	// Public, like its Create; GoToSocial rejects objects without to/cc.
+	trailObject.To = pub.ItemCollection{pub.PublicNS}
+	trailObject.CC = pub.ItemCollection{pub.IRI(trailAuthor.GetString("followers"))}
 	trailObject.Published = trail.GetDateTime("created").Time()
 	trailObject.ID = pub.IRI(trail.GetString("iri"))
 	trailObject.URL = pub.IRI(activityURL)
@@ -758,6 +761,9 @@ func ObjectFromComment(app core.App, comment *core.Record, mentions *pub.ItemCol
 	commentObject.Content = pub.NaturalLanguageValuesNew(pub.LangRefValueNew(pub.NilLangRef, comment.GetString("text")))
 	commentObject.Published = comment.GetDateTime("created").Time()
 	commentObject.AttributedTo = pub.IRI(commentAuthor.GetString("iri"))
+	// Public, like its Create; GoToSocial rejects objects without to/cc.
+	commentObject.To = pub.ItemCollection{pub.PublicNS}
+	commentObject.CC = pub.ItemCollection{pub.IRI(commentAuthor.GetString("followers"))}
 	commentObject.InReplyTo = pub.IRI(commentTrail.GetString("iri"))
 
 	if mentions != nil {
