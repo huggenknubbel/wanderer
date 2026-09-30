@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"pocketbase/util"
+
 	pub "github.com/go-ap/activitypub"
 	"github.com/pocketbase/pocketbase/core"
 	pbtests "github.com/pocketbase/pocketbase/tests"
@@ -228,4 +230,28 @@ func TestCreateActivitiesAddressObject(t *testing.T) {
 		}
 		assertAddressed(t, f.delivered(t, "follower"), []string{publicIRI}, []string{author.GetString("followers")})
 	})
+}
+
+func TestFetchedObjectsArePublic(t *testing.T) {
+	f := setupAddressingTestApp(t)
+	author := f.actor(t, "author", true)
+	trail := f.record(t, "trails", map[string]any{"author": author.Id, "public": true}, "trail")
+	comment := f.record(t, "comments", map[string]any{"author": author.Id, "trail": trail.Id}, "comment")
+
+	trailObject, err := util.ObjectFromTrail(f.app, trail, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	commentObject, err := util.ObjectFromComment(f.app, comment, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, object := range []*pub.Object{trailObject, commentObject} {
+		body, _ := json.Marshal(object)
+		var m map[string]any
+		_ = json.Unmarshal(body, &m)
+		if !reflect.DeepEqual(iris(m["to"]), []string{publicIRI}) || !reflect.DeepEqual(iris(m["cc"]), []string{author.GetString("followers")}) {
+			t.Errorf("%s: to = %v, cc = %v", object.ID, m["to"], m["cc"])
+		}
+	}
 }
