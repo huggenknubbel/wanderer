@@ -1,4 +1,3 @@
-import { json } from "@sveltejs/kit";
 import type { Handle } from "@sveltejs/kit/hooks";
 
 const encoder = new TextEncoder();
@@ -21,7 +20,7 @@ export const apiErrorsAsJson: Handle = async ({ event, resolve }) => {
   }
 
   if (event.route.id === null) {
-    return json({ message: "not_found" }, { status: 404 });
+    return Response.json({ message: "not_found" }, { status: 404 });
   }
 
   const response = await resolve(event);

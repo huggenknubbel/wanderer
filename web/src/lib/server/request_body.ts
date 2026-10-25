@@ -1,5 +1,5 @@
 import { BODY_SIZE_LIMIT } from "$app/env/private";
-import { error, isHttpError, json } from "@sveltejs/kit";
+import { error, isHttpError } from "@sveltejs/kit";
 import type { Handle } from "@sveltejs/kit/hooks";
 import type { IncomingMessage } from "node:http";
 import { UPLOAD_BODY_LIMIT, uploadBodyLimit } from "./upload_body_limit.js";
@@ -130,7 +130,7 @@ export const limitRequestBodies: Handle = async ({ event, resolve }) => {
         if (cancellationDeferred) response.headers.set("Connection", "close");
         return response;
     } catch (cause) {
-        if (isHttpError(cause, 413) || isHttpError(cause, 400)) return json({ message: cause.body.message }, {
+        if (isHttpError(cause, 413) || isHttpError(cause, 400)) return Response.json({ message: cause.body.message }, {
             status: cause.status,
             headers: nodeRequest ? { Connection: "close" } : undefined,
         });

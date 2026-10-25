@@ -1,4 +1,4 @@
-import { error, json, type RequestEvent } from "@sveltejs/kit";
+import { error, type RequestEvent } from "@sveltejs/kit";
 import { z } from "zod";
 
 /**
@@ -53,7 +53,7 @@ export async function GET(event: RequestEvent) {
     }).safeParse(event.params)
 
     if (!safeParams.success) {
-        throw json({ message: safeParams.error }, { status: 400 })
+        throw Response.json({ message: safeParams.error }, { status: 400 })
     }
 
     const safeSearchParams = z.object({
@@ -61,7 +61,7 @@ export async function GET(event: RequestEvent) {
     }).safeParse(Object.fromEntries(event.url.searchParams))
 
     if (!safeSearchParams.success) {
-        throw json({ message: safeSearchParams.error }, { status: 400 })
+        throw Response.json({ message: safeSearchParams.error }, { status: 400 })
     }
 
     const parts = [];

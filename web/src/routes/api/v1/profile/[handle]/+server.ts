@@ -1,7 +1,7 @@
 import type { Profile } from '#lib/models/profile.ts';
 import { getActorResponseForHandle } from '#lib/util/activitypub_server_util.ts';
 import { handleError } from '#lib/util/api_util.ts';
-import { error, json, type RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent } from '@sveltejs/kit';
 
 /**
  * @swagger
@@ -52,7 +52,7 @@ export async function GET(event: RequestEvent) {
             error: actorError ?? undefined
         }
 
-        return json({ profile, actor: actor })
+        return Response.json({ profile, actor: actor })
     } catch (e) {
         if (e instanceof Error && e.message == "fetch failed") {
             return error(404, "Not found")

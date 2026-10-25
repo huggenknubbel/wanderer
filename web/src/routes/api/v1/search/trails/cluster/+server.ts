@@ -1,5 +1,5 @@
 import { withTrailPreferenceMeiliFilter } from "#lib/server/category_preference_filter.ts";
-import { error, json, type RequestEvent } from "@sveltejs/kit";
+import { error, type RequestEvent } from "@sveltejs/kit";
 import Supercluster from "supercluster";
 import { MAP_MAX_POLYLINES } from "#lib/config/map.ts";
 
@@ -120,7 +120,7 @@ export async function POST(event: RequestEvent) {
             }
         }));
 
-        return json({
+        return Response.json({
             type: "FeatureCollection",
             features: [...normalizedSmallFeatures, ...largeFeatures],
             totalHits: r.results[0].estimatedTotalHits ?? r.results[0].totalHits

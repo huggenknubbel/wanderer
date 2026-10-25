@@ -2,7 +2,7 @@ import { POCKETBASE_PROXY_SECRET } from '$app/env/private';
 
 import { handleError } from '#lib/util/api_util.ts';
 import { forwardableHeaders } from '#lib/server/http.ts';
-import { json, type RequestEvent } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 import type { APActivity } from 'activitypub-types';
 import { INBOX_BODY_LIMIT, readBoundedRequestText } from '#lib/server/request_body.ts';
 
@@ -41,7 +41,7 @@ export async function POST(event: RequestEvent) {
         const bodyText = await readBoundedRequestText(event.request, INBOX_BODY_LIMIT)
         const activity: APActivity = JSON.parse(bodyText)
         if (!activity.actor) {
-            return json("Bad request", { status: 400 });
+            return Response.json("Bad request", { status: 400 });
         }
 
         // Clone original headers (the backend verifies the signature)
@@ -62,13 +62,13 @@ export async function POST(event: RequestEvent) {
         })
 
         if (success === false) {
-            return json("Invalid header signature", { status: 400 });
+            return Response.json("Invalid header signature", { status: 400 });
         }
 
         const headers = new Headers()
         headers.append("Content-Type", "application/activity+json")
 
-        return json("", { status: 200, headers });
+        return Response.json("", { status: 200, headers });
     } catch (e) {
         return handleError(e)
     }

@@ -13,7 +13,7 @@ import {
 } from '#lib/server/profile_statistics.ts';
 import { getActorResponseForHandle } from '#lib/util/activitypub_server_util.ts';
 import { Collection, handleError } from '#lib/util/api_util.ts';
-import { error, json, type RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import { ClientResponseError } from 'pocketbase';
 
 /**
@@ -154,7 +154,7 @@ export async function GET(event: RequestEvent) {
             })
         }
 
-        return json(activities, {
+        return Response.json(activities, {
             headers: {
                 'Cache-Control': 'private, no-store',
                 Vary: 'Cookie, Authorization',

@@ -1,4 +1,4 @@
-import { error, json, type RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import type PocketBase from "pocketbase";
 // @ts-ignore
 import { ORIGIN } from "$app/env/private"
@@ -26,7 +26,7 @@ export async function GET(event: RequestEvent) {
             const [username, domain] = splitUsername(resource.replace("acct:", ""))
 
             if (hostname !== domain) {
-                return json({ message: "Not found" }, { status: 404 });
+                return Response.json({ message: "Not found" }, { status: 404 });
             }
             iri = `${ORIGIN}/api/v1/activitypub/user/${username.toLowerCase()}`
             profile = `${ORIGIN}/profile/@${username.toLowerCase()}`
@@ -61,7 +61,7 @@ export async function GET(event: RequestEvent) {
             ],
         }
 
-        return json(r)
+        return Response.json(r)
     } catch (err) {
         return handleError(err)
     }

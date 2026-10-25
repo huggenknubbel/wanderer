@@ -4,7 +4,7 @@ import type { Settings } from '#lib/models/settings.ts'
 
 import PocketBase, { ClientResponseError } from 'pocketbase'
 import { isRouteProtected } from '#lib/util/authorization_util.ts'
-import { error, json, redirect, text } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 import { sequence, type Handle } from '@sveltejs/kit/hooks'
 import { Meilisearch } from 'meilisearch'
 import { locale } from 'svelte-i18n'
@@ -37,9 +37,9 @@ function csrf(allowedPaths: string[]): Handle {
     if (forbidden) {
       const message = `Cross-site ${request.method} form submissions are forbidden`;
       if (isApiRequest(url) || request.headers.get("accept") === "application/json") {
-        return json({ message }, { status: 403 });
+        return Response.json({ message }, { status: 403 });
       }
-      return text(message, { status: 403 });
+      return new Response(message, { status: 403 });
     }
 
     return resolve(event);
@@ -95,7 +95,7 @@ const auth: Handle = async ({ event, resolve }) => {
         // Only a 401 rejects the token; a missing auth endpoint or a backend
         // failure is not a token rejection.
         if (e instanceof ClientResponseError && e.status === 401) {
-          return json({ message: "invalid_token" }, {
+          return Response.json({ message: "invalid_token" }, {
             status: 401,
             headers: { "WWW-Authenticate": 'Bearer error="invalid_token"' },
           })
@@ -149,7 +149,7 @@ const auth: Handle = async ({ event, resolve }) => {
   // validate the user existence and if the path is acceesible
   if (!pb.authStore.record && isRouteProtected(url)) {
     if (url.pathname.startsWith("/api")) {
-      return json({ message: "Unauthorized" }, { status: 401 })
+      return Response.json({ message: "Unauthorized" }, { status: 401 })
     }
     throw redirect(302, '/login?r=' + url.pathname);
   } else if (pb.authStore.record && url.pathname === "/login") {

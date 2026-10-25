@@ -1,7 +1,7 @@
 import { PUBLIC_POCKETBASE_URL } from "$app/env/public";
 import { ORIGIN } from "$app/env/private";
 
-import { error, json, type RequestEvent } from "@sveltejs/kit";
+import { error, type RequestEvent } from "@sveltejs/kit";
 import { z } from "zod";
 import { handleError } from "#lib/util/api_util.ts";
 
@@ -34,7 +34,7 @@ export async function GET(event: RequestEvent) {
             provider['img' as keyof typeof provider] = await imageUrlToBase64(imageURL, event.fetch);
             provider['url' as keyof typeof provider] = `${provider.authURL}${redirectURL}`
         }
-        return json(r)
+        return Response.json(r)
     } catch (e: any) {
         return handleError(e);
     }
@@ -56,7 +56,7 @@ export async function POST(event: RequestEvent) {
             safeData.codeVerifier,
             redirectURL,
         )
-        return json(r)
+        return Response.json(r)
     } catch (e: any) {
         return handleError(e);
     }

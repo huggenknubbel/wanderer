@@ -3,7 +3,7 @@ import { type FeedItem } from '#lib/models/feed.ts';
 import type { Trail } from '#lib/models/trail.ts';
 import { getActorResponseForHandle } from '#lib/util/activitypub_server_util.ts';
 import { Collection, handleError } from '#lib/util/api_util.ts';
-import { error, json, type RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import { ClientResponseError, type ListResult } from 'pocketbase';
 
 /**
@@ -79,7 +79,7 @@ export async function GET(event: RequestEvent) {
         }
 
 
-        return json(feed)
+        return Response.json(feed)
     } catch (e) {
         console.error(e)
         return handleError(e)

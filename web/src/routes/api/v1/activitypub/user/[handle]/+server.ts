@@ -4,7 +4,7 @@ import type { Actor } from '#lib/models/activitypub/actor.ts';
 import type { UserAnonymous } from "#lib/models/user.ts";
 import { splitUsername } from '#lib/util/activitypub_util.ts';
 import { handleError } from '#lib/util/api_util.ts';
-import { error, json, type RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import { type APActor, type APRoot } from 'activitypub-types';
 
 
@@ -39,7 +39,7 @@ export async function GET(event: RequestEvent) {
     try {
         let fullUsername = event.params.handle;
         if (!fullUsername) {
-            return json({ message: "Bad request" }, { status: 400 });
+            return Response.json({ message: "Bad request" }, { status: 400 });
         }
 
         fullUsername = fullUsername.replace(/^@/, "");
@@ -82,7 +82,7 @@ export async function GET(event: RequestEvent) {
         const headers = new Headers()
         headers.append("Content-Type", "application/activity+json")
 
-        return json(r, { headers });
+        return Response.json(r, { headers });
     } catch (e) {
         return handleError(e)
     }

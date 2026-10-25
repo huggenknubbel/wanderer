@@ -4,7 +4,7 @@ import type { Actor } from '#lib/models/activitypub/actor.ts';
 import type { Follow } from '#lib/models/follow.ts';
 import { splitUsername } from '#lib/util/activitypub_util.ts';
 import { handleError } from '#lib/util/api_util.ts';
-import { json, type RequestEvent } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 import type { APOrderedCollectionPage, APRoot } from 'activitypub-types';
 import type { ListResult } from 'pocketbase';
 
@@ -49,7 +49,7 @@ export async function GET(event: RequestEvent) {
 
         let fullUsername = event.params.handle;
         if (!fullUsername) {
-            return json({ message: "Bad request" }, { status: 400 });
+            return Response.json({ message: "Bad request" }, { status: 400 });
         }
 
         fullUsername = fullUsername.replace(/^@/, "");
@@ -82,7 +82,7 @@ export async function GET(event: RequestEvent) {
 
         // Without ?page, serve the collection itself (required by GoToSocial).
         if (!event.url.searchParams.has("page")) {
-            return json({
+            return Response.json({
                 "@context": "https://www.w3.org/ns/activitystreams",
                 id: `${id}/following`,
                 type: "OrderedCollection",
@@ -91,7 +91,7 @@ export async function GET(event: RequestEvent) {
             }, { headers });
         }
 
-        return json(following, { headers });
+        return Response.json(following, { headers });
     } catch (e) {
         return handleError(e)
     }

@@ -2,7 +2,7 @@ import type { TrailSearchResult } from '#lib/models/trail.ts';
 import type { ListSearchResult } from '#lib/stores/search_store.ts';
 import { getActorResponseForHandle } from '#lib/util/activitypub_server_util.ts';
 import { handleError } from '#lib/util/api_util.ts';
-import { error, json, type RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import type { SearchResponse } from 'meilisearch';
 import { ClientResponseError } from 'pocketbase';
 
@@ -78,7 +78,7 @@ export async function POST(event: RequestEvent) {
         }
 
 
-        return json(r)
+        return Response.json(r)
     } catch (e) {
         return handleError(e)
     }
