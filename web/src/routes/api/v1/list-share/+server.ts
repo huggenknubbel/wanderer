@@ -1,7 +1,7 @@
-import type { Actor } from '$lib/models/activitypub/actor';
-import { ListShareCreateSchema } from '$lib/models/api/list_share_schema';
-import type { ListShare } from '$lib/models/list_share';
-import { Collection, create, handleError, list } from '$lib/util/api_util';
+import type { Actor } from '#lib/models/activitypub/actor.ts';
+import { ListShareCreateSchema } from '#lib/models/api/list_share_schema.ts';
+import type { ListShare } from '#lib/models/list_share.ts';
+import { Collection, create, handleError, list } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

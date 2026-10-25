@@ -1,6 +1,6 @@
-import { NotificationUpdateSchema } from "$lib/models/api/notification_schema";
-import type { Notification } from "$lib/models/notification";
-import { Collection, handleError, update } from "$lib/util/api_util";
+import { NotificationUpdateSchema } from "#lib/models/api/notification_schema.ts";
+import type { Notification } from "#lib/models/notification.ts";
+import { Collection, handleError, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 

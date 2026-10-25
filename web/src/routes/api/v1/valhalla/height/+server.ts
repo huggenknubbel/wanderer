@@ -1,5 +1,5 @@
-import { getValhallaBaseUrl } from '$lib/server/valhalla';
-import { proxyJsonResponse } from '$lib/server/http';
+import { getValhallaBaseUrl } from '#lib/server/valhalla.ts';
+import { proxyJsonResponse } from '#lib/server/http.ts';
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 

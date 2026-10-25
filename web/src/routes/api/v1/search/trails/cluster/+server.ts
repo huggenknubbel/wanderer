@@ -1,7 +1,7 @@
-import { withTrailPreferenceMeiliFilter } from "$lib/server/category_preference_filter";
+import { withTrailPreferenceMeiliFilter } from "#lib/server/category_preference_filter.ts";
 import { error, json, type RequestEvent } from "@sveltejs/kit";
 import Supercluster from "supercluster";
-import { MAP_MAX_POLYLINES } from "$lib/config/map";
+import { MAP_MAX_POLYLINES } from "#lib/config/map.ts";
 
 function isFiniteNumber(value: unknown): value is number {
     return typeof value === "number" && Number.isFinite(value);

@@ -1,9 +1,9 @@
-import { env } from '$env/dynamic/private';
+import { ORIGIN } from '$app/env/private';
 
-import type { Actor } from '$lib/models/activitypub/actor';
-import type { Follow } from '$lib/models/follow';
-import { splitUsername } from '$lib/util/activitypub_util';
-import { handleError } from '$lib/util/api_util';
+import type { Actor } from '#lib/models/activitypub/actor.ts';
+import type { Follow } from '#lib/models/follow.ts';
+import { splitUsername } from '#lib/util/activitypub_util.ts';
+import { handleError } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 import type { APOrderedCollectionPage, APRoot } from 'activitypub-types';
 import type { ListResult } from 'pocketbase';
@@ -54,7 +54,7 @@ export async function GET(event: RequestEvent) {
 
         fullUsername = fullUsername.replace(/^@/, "");
 
-        const [username, domain] = splitUsername(fullUsername, env.ORIGIN)
+        const [username, domain] = splitUsername(fullUsername, ORIGIN)
 
         const actor: Actor = await event.locals.pb.collection("activitypub_actors").getFirstListItem(`preferred_username:lower='${username?.toLowerCase()}'&&is_local=true`)
 

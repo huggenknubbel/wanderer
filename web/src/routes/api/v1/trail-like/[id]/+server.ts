@@ -1,5 +1,5 @@
-import type { TrailLike } from "$lib/models/trail_like";
-import { Collection, handleError, remove, show } from "$lib/util/api_util";
+import type { TrailLike } from "#lib/models/trail_like.ts";
+import { Collection, handleError, remove, show } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

@@ -1,4 +1,4 @@
-import { assertFileField, handleError } from "$lib/util/api_util";
+import { assertFileField, handleError } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 import { POST as formPOST } from "../../form/[id]/+server";
 

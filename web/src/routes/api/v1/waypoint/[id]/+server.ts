@@ -1,6 +1,6 @@
-import { WaypointUpdateSchema } from "$lib/models/api/waypoint_schema";
-import type { Waypoint } from "$lib/models/waypoint";
-import { Collection, handleError, remove, show, update } from "$lib/util/api_util";
+import { WaypointUpdateSchema } from "#lib/models/api/waypoint_schema.ts";
+import type { Waypoint } from "#lib/models/waypoint.ts";
+import { Collection, handleError, remove, show, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

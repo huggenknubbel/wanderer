@@ -1,5 +1,5 @@
-import type { User } from "$lib/models/user";
-import { Collection, handleError, upload } from "$lib/util/api_util";
+import type { User } from "#lib/models/user.ts";
+import { Collection, handleError, upload } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 const fileFields = ["avatar"] as const;

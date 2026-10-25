@@ -1,7 +1,7 @@
-import type { Actor } from '$lib/models/activitypub/actor';
-import { TrailShareCreateSchema } from '$lib/models/api/trail_share_schema';
-import type { TrailShare } from '$lib/models/trail_share';
-import { Collection, create, handleError, list } from '$lib/util/api_util';
+import type { Actor } from '#lib/models/activitypub/actor.ts';
+import { TrailShareCreateSchema } from '#lib/models/api/trail_share_schema.ts';
+import type { TrailShare } from '#lib/models/trail_share.ts';
+import { Collection, create, handleError, list } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

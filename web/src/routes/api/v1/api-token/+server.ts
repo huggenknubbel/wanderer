@@ -1,8 +1,8 @@
-import type { APIToken } from '$lib/models/api_token';
-import { create } from '$lib/util/api_util';
-import { Collection, handleError, list } from '$lib/util/api_util';
+import type { APIToken } from '#lib/models/api_token.ts';
+import { create } from '#lib/util/api_util.ts';
+import { Collection, handleError, list } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { APITokenCreateSchema } from "$lib/models/api/api_token_schema";
+import { APITokenCreateSchema } from "#lib/models/api/api_token_schema.ts";
 
 /**
  * @swagger

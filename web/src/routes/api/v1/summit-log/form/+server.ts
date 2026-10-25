@@ -1,5 +1,5 @@
-import type { SummitLog } from '$lib/models/summit_log';
-import { Collection, handleError, uploadCreate } from '$lib/util/api_util';
+import type { SummitLog } from '#lib/models/summit_log.ts';
+import { Collection, handleError, uploadCreate } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

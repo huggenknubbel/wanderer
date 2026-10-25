@@ -1,6 +1,6 @@
 import { json, type RequestEvent } from "@sveltejs/kit";
-import { proxyJsonResponse } from "$lib/server/http";
-import { fetchOverpass } from "$lib/server/overpass";
+import { proxyJsonResponse } from "#lib/server/http.ts";
+import { fetchOverpass } from "#lib/server/overpass.ts";
 
 export async function GET(event: RequestEvent) {
     const data = event.url.searchParams.get("data");

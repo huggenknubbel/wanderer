@@ -1,6 +1,6 @@
-import { TrailLinkShareUpdateSchema } from "$lib/models/api/trail_link_share_schema";
-import type { TrailLinkShare } from "$lib/models/trail_link_share";
-import { Collection, handleError, remove, show, update } from "$lib/util/api_util";
+import { TrailLinkShareUpdateSchema } from "#lib/models/api/trail_link_share_schema.ts";
+import type { TrailLinkShare } from "#lib/models/trail_link_share.ts";
+import { Collection, handleError, remove, show, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

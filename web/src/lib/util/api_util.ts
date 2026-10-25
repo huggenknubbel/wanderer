@@ -1,7 +1,7 @@
-import { error, isHttpError, json, type NumericRange, type RequestEvent } from "@sveltejs/kit";
+import { error, isHttpError, json, type RequestEvent } from "@sveltejs/kit";
 import { ClientResponseError, type ListResult } from "pocketbase";
 import { ZodError, type ZodType } from "zod";
-import { RecordListOptionsSchema, RecordIdSchema, RecordOptionsSchema } from "$lib/models/api/base_schema";
+import { RecordListOptionsSchema, RecordIdSchema, RecordOptionsSchema } from "#lib/models/api/base_schema.ts";
 
 export class APIError extends Error {
     status: number;

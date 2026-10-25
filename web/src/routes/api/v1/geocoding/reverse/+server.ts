@@ -1,6 +1,6 @@
 import { json, type RequestEvent } from "@sveltejs/kit";
-import { proxyJsonResponse } from "$lib/server/http";
-import { fetchNominatim } from "$lib/server/nominatim";
+import { proxyJsonResponse } from "#lib/server/http.ts";
+import { fetchNominatim } from "#lib/server/nominatim.ts";
 
 export async function GET(event: RequestEvent) {
     const lat = event.url.searchParams.get("lat");

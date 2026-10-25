@@ -1,7 +1,7 @@
-import type { Trail } from "$lib/models/trail";
-import { Collection, handleError, uploadUpdate } from "$lib/util/api_util";
-import { applyGpxToForm, trailGpxFields } from "$lib/util/gpx_util";
-import { RecordIdSchema } from "$lib/models/api/base_schema";
+import type { Trail } from "#lib/models/trail.ts";
+import { Collection, handleError, uploadUpdate } from "#lib/util/api_util.ts";
+import { applyGpxToForm, trailGpxFields } from "#lib/util/gpx_util.ts";
+import { RecordIdSchema } from "#lib/models/api/base_schema.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

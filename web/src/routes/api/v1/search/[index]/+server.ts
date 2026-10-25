@@ -1,4 +1,4 @@
-import { withTrailPreferenceMeiliFilter } from "$lib/server/category_preference_filter";
+import { withTrailPreferenceMeiliFilter } from "#lib/server/category_preference_filter.ts";
 import { error, json, type RequestEvent } from "@sveltejs/kit";
 
 /**

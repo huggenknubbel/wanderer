@@ -1,6 +1,6 @@
-import { UserSubcategoryPreferenceUpsertSchema } from "$lib/models/api/subcategory_preference_schema";
-import type { UserSubcategoryPreference } from "$lib/models/subcategory_preference";
-import { Collection, handleError } from "$lib/util/api_util";
+import { UserSubcategoryPreferenceUpsertSchema } from "#lib/models/api/subcategory_preference_schema.ts";
+import type { UserSubcategoryPreference } from "#lib/models/subcategory_preference.ts";
+import { Collection, handleError } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

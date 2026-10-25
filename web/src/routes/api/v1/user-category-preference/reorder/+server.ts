@@ -1,7 +1,7 @@
 import {
     UserCategoryPreferenceReorderSchema,
-} from "$lib/models/api/category_preference_schema";
-import { handleError } from "$lib/util/api_util";
+} from "#lib/models/api/category_preference_schema.ts";
+import { handleError } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

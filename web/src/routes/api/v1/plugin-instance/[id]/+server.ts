@@ -1,8 +1,8 @@
 import {
     PluginInstanceUpdateSchema,
-} from "$lib/models/api/plugin_instance_schema";
-import type { PluginInstance } from "$lib/models/plugin_instance";
-import { Collection, handleError, remove, show, update } from "$lib/util/api_util";
+} from "#lib/models/api/plugin_instance_schema.ts";
+import type { PluginInstance } from "#lib/models/plugin_instance.ts";
+import { Collection, handleError, remove, show, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

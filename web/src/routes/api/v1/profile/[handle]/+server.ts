@@ -1,6 +1,6 @@
-import type { Profile } from '$lib/models/profile';
-import { getActorResponseForHandle } from '$lib/util/activitypub_server_util';
-import { handleError } from '$lib/util/api_util';
+import type { Profile } from '#lib/models/profile.ts';
+import { getActorResponseForHandle } from '#lib/util/activitypub_server_util.ts';
+import { handleError } from '#lib/util/api_util.ts';
 import { error, json, type RequestEvent } from '@sveltejs/kit';
 
 /**
@@ -32,7 +32,7 @@ import { error, json, type RequestEvent } from '@sveltejs/kit';
 export async function GET(event: RequestEvent) {
     const handle = event.params.handle;
     if (!handle) {
-        return error(400, { message: "Bad request" })
+        return error(400, "Bad request")
     }
 
     try {

@@ -1,5 +1,5 @@
-import type { FeedItem } from "$lib/models/feed";
-import { Collection, handleError, list } from "$lib/util/api_util";
+import type { FeedItem } from "#lib/models/feed.ts";
+import { Collection, handleError, list } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

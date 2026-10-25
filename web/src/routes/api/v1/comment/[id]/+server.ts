@@ -1,8 +1,8 @@
-import { CommentUpdateSchema } from "$lib/models/api/comment_schema";
-import type { Comment } from "$lib/models/comment";
-import { Collection, handleError, remove, show, update } from "$lib/util/api_util";
+import { CommentUpdateSchema } from "#lib/models/api/comment_schema.ts";
+import type { Comment } from "#lib/models/comment.ts";
+import { Collection, handleError, remove, show, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
-import { acceptsActivityPub, activityPubObject } from "$lib/server/activitypub_objects";
+import { acceptsActivityPub, activityPubObject } from "#lib/server/activitypub_objects.ts";
 
 /**
  * @swagger

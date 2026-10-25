@@ -1,8 +1,8 @@
 import {
     UserCategoryPreferenceUpsertSchema,
-} from "$lib/models/api/category_preference_schema";
-import type { UserCategoryPreference } from "$lib/models/category_preference";
-import { Collection, handleError } from "$lib/util/api_util";
+} from "#lib/models/api/category_preference_schema.ts";
+import type { UserCategoryPreference } from "#lib/models/category_preference.ts";
+import { Collection, handleError } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

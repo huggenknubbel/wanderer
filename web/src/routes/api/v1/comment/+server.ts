@@ -1,6 +1,6 @@
-import { CommentCreateSchema } from '$lib/models/api/comment_schema';
-import type { Comment } from '$lib/models/comment';
-import { Collection, create, handleError, list } from '$lib/util/api_util';
+import { CommentCreateSchema } from '#lib/models/api/comment_schema.ts';
+import type { Comment } from '#lib/models/comment.ts';
+import { Collection, create, handleError, list } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

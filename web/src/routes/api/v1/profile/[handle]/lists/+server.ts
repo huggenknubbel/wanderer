@@ -1,7 +1,7 @@
-import type { TrailSearchResult } from '$lib/models/trail';
-import type { ListSearchResult } from '$lib/stores/search_store';
-import { getActorResponseForHandle } from '$lib/util/activitypub_server_util';
-import { handleError } from '$lib/util/api_util';
+import type { TrailSearchResult } from '#lib/models/trail.ts';
+import type { ListSearchResult } from '#lib/stores/search_store.ts';
+import { getActorResponseForHandle } from '#lib/util/activitypub_server_util.ts';
+import { handleError } from '#lib/util/api_util.ts';
 import { error, json, type RequestEvent } from '@sveltejs/kit';
 import type { SearchResponse } from 'meilisearch';
 import { ClientResponseError } from 'pocketbase';
@@ -50,7 +50,7 @@ import { ClientResponseError } from 'pocketbase';
 export async function POST(event: RequestEvent) {
     const handle = event.params.handle;
     if (!handle) {
-        return error(400, { message: "Bad request" })
+        return error(400, "Bad request")
     }
 
     try {

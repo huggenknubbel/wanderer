@@ -1,6 +1,6 @@
-import { ListUpdateSchema } from "$lib/models/api/list_schema";
-import type { List } from "$lib/models/list";
-import { Collection, handleError, remove, update } from "$lib/util/api_util";
+import { ListUpdateSchema } from "#lib/models/api/list_schema.ts";
+import type { List } from "#lib/models/list.ts";
+import { Collection, handleError, remove, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

@@ -1,6 +1,6 @@
-import { SummitLogUpdateSchema } from "$lib/models/api/summit_log_schema";
-import type { SummitLog } from "$lib/models/summit_log";
-import { Collection, handleError, remove, show, update } from "$lib/util/api_util";
+import { SummitLogUpdateSchema } from "#lib/models/api/summit_log_schema.ts";
+import type { SummitLog } from "#lib/models/summit_log.ts";
+import { Collection, handleError, remove, show, update } from "#lib/util/api_util.ts";
 import { error, json, type RequestEvent } from "@sveltejs/kit";
 
 

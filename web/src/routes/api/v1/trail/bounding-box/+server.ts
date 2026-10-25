@@ -1,5 +1,5 @@
-import { withTrailPreferenceMeiliFilter } from "$lib/server/category_preference_filter";
-import type { TrailBoundingBox } from "$lib/models/trail";
+import { withTrailPreferenceMeiliFilter } from "#lib/server/category_preference_filter.ts";
+import type { TrailBoundingBox } from "#lib/models/trail.ts";
 import { error, json, type RequestEvent } from "@sveltejs/kit";
 
 /**

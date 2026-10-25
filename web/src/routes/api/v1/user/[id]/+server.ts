@@ -1,7 +1,7 @@
-import { RecordIdSchema } from '$lib/models/api/base_schema';
-import { UserUpdateSchema } from '$lib/models/api/user_schema';
-import type { User } from '$lib/models/user';
-import { Collection, handleError, remove, show } from '$lib/util/api_util';
+import { RecordIdSchema } from '#lib/models/api/base_schema.ts';
+import { UserUpdateSchema } from '#lib/models/api/user_schema.ts';
+import type { User } from '#lib/models/user.ts';
+import { Collection, handleError, remove, show } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

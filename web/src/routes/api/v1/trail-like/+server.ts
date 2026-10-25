@@ -1,6 +1,6 @@
-import { TrailLikeCreateSchema } from '$lib/models/api/trail_like_schema';
-import type { TrailLike } from '$lib/models/trail_like';
-import { Collection, create, handleError, list } from '$lib/util/api_util';
+import { TrailLikeCreateSchema } from '#lib/models/api/trail_like_schema.ts';
+import type { TrailLike } from '#lib/models/trail_like.ts';
+import { Collection, create, handleError, list } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

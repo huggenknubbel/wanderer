@@ -1,7 +1,7 @@
-import type { SummitLog } from "$lib/models/summit_log";
-import { Collection, handleError, uploadUpdate } from "$lib/util/api_util";
-import { applyGpxToForm, summitLogGpxFields } from "$lib/util/gpx_util";
-import { RecordIdSchema } from "$lib/models/api/base_schema";
+import type { SummitLog } from "#lib/models/summit_log.ts";
+import { Collection, handleError, uploadUpdate } from "#lib/util/api_util.ts";
+import { applyGpxToForm, summitLogGpxFields } from "#lib/util/gpx_util.ts";
+import { RecordIdSchema } from "#lib/models/api/base_schema.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

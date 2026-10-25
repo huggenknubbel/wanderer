@@ -1,5 +1,5 @@
-import { type TrailFilterValues } from '$lib/models/trail';
-import { handleError } from '$lib/util/api_util';
+import { type TrailFilterValues } from '#lib/models/trail.ts';
+import { handleError } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

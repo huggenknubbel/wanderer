@@ -1,8 +1,8 @@
-import { RecordListOptionsSchema } from '$lib/models/api/base_schema';
-import { type FeedItem } from '$lib/models/feed';
-import type { Trail } from '$lib/models/trail';
-import { getActorResponseForHandle } from '$lib/util/activitypub_server_util';
-import { Collection, handleError } from '$lib/util/api_util';
+import { RecordListOptionsSchema } from '#lib/models/api/base_schema.ts';
+import { type FeedItem } from '#lib/models/feed.ts';
+import type { Trail } from '#lib/models/trail.ts';
+import { getActorResponseForHandle } from '#lib/util/activitypub_server_util.ts';
+import { Collection, handleError } from '#lib/util/api_util.ts';
 import { error, json, type RequestEvent } from '@sveltejs/kit';
 import { ClientResponseError, type ListResult } from 'pocketbase';
 
@@ -43,7 +43,7 @@ import { ClientResponseError, type ListResult } from 'pocketbase';
 export async function GET(event: RequestEvent) {
     const handle = event.params.handle;
     if (!handle) {
-        return error(400, { message: "Bad request" })
+        return error(400, "Bad request")
     }
 
     try {

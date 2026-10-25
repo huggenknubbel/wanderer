@@ -1,4 +1,4 @@
-import { Collection, handleError, remove } from "$lib/util/api_util";
+import { Collection, handleError, remove } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

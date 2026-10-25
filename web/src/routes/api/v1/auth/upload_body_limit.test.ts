@@ -1,6 +1,6 @@
 import { isHttpError, json, type RequestEvent } from "@sveltejs/kit";
 import { expect, it, vi } from "vitest";
-import { limitRequestBodies } from "$lib/server/request_body";
+import { limitRequestBodies } from "#lib/server/request_body.ts";
 import { PUT as createTrail } from "../trail/form/+server";
 import { PUT as createLog } from "../summit-log/form/+server";
 import { PUT as createList } from "../list/form/+server";

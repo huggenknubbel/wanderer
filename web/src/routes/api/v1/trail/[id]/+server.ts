@@ -1,9 +1,9 @@
-import { TrailUpdateSchema } from '$lib/models/api/trail_schema';
-import type { Trail } from "$lib/models/trail";
-import { Collection, handleError, remove, update } from "$lib/util/api_util";
+import { TrailUpdateSchema } from '#lib/models/api/trail_schema.ts';
+import type { Trail } from "#lib/models/trail.ts";
+import { Collection, handleError, remove, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 import type PocketBase from "pocketbase";
-import { acceptsActivityPub, activityPubObject } from "$lib/server/activitypub_objects";
+import { acceptsActivityPub, activityPubObject } from "#lib/server/activitypub_objects.ts";
 
 /**
  * @swagger

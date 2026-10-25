@@ -1,6 +1,6 @@
-import { TrailRecommendSchema } from '$lib/models/api/trail_schema';
-import { withTrailPreferenceMeiliFilter } from '$lib/server/category_preference_filter';
-import { handleError } from '$lib/util/api_util';
+import { TrailRecommendSchema } from '#lib/models/api/trail_schema.ts';
+import { withTrailPreferenceMeiliFilter } from '#lib/server/category_preference_filter.ts';
+import { handleError } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

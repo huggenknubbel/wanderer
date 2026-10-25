@@ -1,6 +1,6 @@
-import { SettingsCreateSchema } from '$lib/models/api/settings_schema';
-import type { Settings } from '$lib/models/settings';
-import { Collection, create } from '$lib/util/api_util';
+import { SettingsCreateSchema } from '#lib/models/api/settings_schema.ts';
+import type { Settings } from '#lib/models/settings.ts';
+import { Collection, create } from '#lib/util/api_util.ts';
 import { error, json, type RequestEvent } from '@sveltejs/kit';
 
 /**
@@ -34,6 +34,6 @@ export async function PUT(event: RequestEvent) {
 
         return json(r);
     } catch (e: any) {
-        throw error(e.status, e)
+        throw error(e.status, e.message)
     }
 }

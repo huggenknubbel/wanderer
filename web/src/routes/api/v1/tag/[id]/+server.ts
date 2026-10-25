@@ -1,6 +1,6 @@
-import { TagUpdateSchema } from "$lib/models/api/tag_schema";
-import type { Tag } from "$lib/models/tag";
-import { Collection, handleError, remove, show, update } from "$lib/util/api_util";
+import { TagUpdateSchema } from "#lib/models/api/tag_schema.ts";
+import type { Tag } from "#lib/models/tag.ts";
+import { Collection, handleError, remove, show, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

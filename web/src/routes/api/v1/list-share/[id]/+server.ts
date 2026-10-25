@@ -1,6 +1,6 @@
-import { ListShareUpdateSchema } from "$lib/models/api/list_share_schema";
-import type { ListShare } from "$lib/models/list_share";
-import { Collection, handleError, remove, show, update } from "$lib/util/api_util";
+import { ListShareUpdateSchema } from "#lib/models/api/list_share_schema.ts";
+import type { ListShare } from "#lib/models/list_share.ts";
+import { Collection, handleError, remove, show, update } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

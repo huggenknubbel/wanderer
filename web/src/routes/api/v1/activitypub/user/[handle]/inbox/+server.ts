@@ -1,11 +1,10 @@
-import { env as publicEnv } from '$env/dynamic/public';
-import { env as privateEnv } from '$env/dynamic/private';
+import { POCKETBASE_PROXY_SECRET } from '$app/env/private';
 
-import { handleError } from '$lib/util/api_util';
-import { forwardableHeaders } from '$lib/server/http';
+import { handleError } from '#lib/util/api_util.ts';
+import { forwardableHeaders } from '#lib/server/http.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 import type { APActivity } from 'activitypub-types';
-import { INBOX_BODY_LIMIT, readBoundedRequestText } from '$lib/server/request_body';
+import { INBOX_BODY_LIMIT, readBoundedRequestText } from '#lib/server/request_body.ts';
 
 /**
  * @swagger
@@ -53,7 +52,7 @@ export async function POST(event: RequestEvent) {
 
         // Authenticate this internal hop to the backend so the header above is only
         // ever trusted when it originates from this frontend proxy.
-        originalHeaders['X-Internal-Secret'] = privateEnv.POCKETBASE_PROXY_SECRET ?? '';
+        originalHeaders['X-Internal-Secret'] = POCKETBASE_PROXY_SECRET ?? '';
 
         const success = await event.locals.pb.send("/activitypub/activity/process", {
             method: "POST",

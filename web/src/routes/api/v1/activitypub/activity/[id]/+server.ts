@@ -1,5 +1,5 @@
-import type { Activity } from '$lib/models/activitypub/activity';
-import { Collection, handleError, show } from "$lib/util/api_util";
+import type { Activity } from '#lib/models/activitypub/activity.ts';
+import { Collection, handleError, show } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 import type { APActivity, APRoot } from 'activitypub-types';
 

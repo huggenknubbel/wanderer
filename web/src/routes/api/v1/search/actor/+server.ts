@@ -1,7 +1,7 @@
-import type { Actor, ActorSearchResult } from '$lib/models/activitypub/actor';
-import { getActorResponseForHandle } from '$lib/util/activitypub_server_util';
-import { isValidPubHandle, splitUsername } from '$lib/util/activitypub_util';
-import { handleError } from '$lib/util/api_util';
+import type { Actor, ActorSearchResult } from '#lib/models/activitypub/actor.ts';
+import { getActorResponseForHandle } from '#lib/util/activitypub_server_util.ts';
+import { isValidPubHandle, splitUsername } from '#lib/util/activitypub_util.ts';
+import { handleError } from '#lib/util/api_util.ts';
 import { error, json, type RequestEvent } from '@sveltejs/kit';
 import { ClientResponseError, type ListResult } from "pocketbase"
 import type { SearchResponse } from "meilisearch";

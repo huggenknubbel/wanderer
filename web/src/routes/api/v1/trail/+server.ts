@@ -1,8 +1,8 @@
-import { RecordListOptionsSchema } from '$lib/models/api/base_schema';
-import { TrailCreateSchema } from '$lib/models/api/trail_schema';
-import type { Trail } from '$lib/models/trail';
-import { withTrailPreferencePocketBaseFilter } from '$lib/server/category_preference_filter';
-import { Collection, create, handleError } from '$lib/util/api_util';
+import { RecordListOptionsSchema } from '#lib/models/api/base_schema.ts';
+import { TrailCreateSchema } from '#lib/models/api/trail_schema.ts';
+import type { Trail } from '#lib/models/trail.ts';
+import { withTrailPreferencePocketBaseFilter } from '#lib/server/category_preference_filter.ts';
+import { Collection, create, handleError } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

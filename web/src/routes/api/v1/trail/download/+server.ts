@@ -1,5 +1,5 @@
-import { handleError } from "$lib/util/api_util";
-import { DownloadError, fetchExternalFile } from "$lib/util/secure_fetch_util";
+import { handleError } from "#lib/util/api_util.ts";
+import { DownloadError, fetchExternalFile } from "#lib/util/secure_fetch_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**

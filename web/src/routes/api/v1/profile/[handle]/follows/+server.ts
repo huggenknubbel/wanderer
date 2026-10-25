@@ -1,5 +1,5 @@
-import type { Comment } from '$lib/models/comment';
-import { handleError } from '$lib/util/api_util';
+import type { Comment } from '#lib/models/comment.ts';
+import { handleError } from '#lib/util/api_util.ts';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 /**

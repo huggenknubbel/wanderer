@@ -1,5 +1,5 @@
-import type { Category } from "$lib/models/category";
-import { Collection, handleError, list } from "$lib/util/api_util";
+import type { Category } from "#lib/models/category.ts";
+import { Collection, handleError, list } from "#lib/util/api_util.ts";
 import { json, type RequestEvent } from "@sveltejs/kit";
 
 /**
