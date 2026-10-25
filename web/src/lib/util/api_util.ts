@@ -1,6 +1,6 @@
 import { error, isHttpError, json, type NumericRange, type RequestEvent } from "@sveltejs/kit";
 import { ClientResponseError, type ListResult } from "pocketbase";
-import { ZodError, type ZodSchema } from "zod";
+import { ZodError, type ZodType } from "zod";
 import { RecordListOptionsSchema, RecordIdSchema, RecordOptionsSchema } from "$lib/models/api/base_schema";
 
 export class APIError extends Error {
@@ -84,7 +84,7 @@ export async function show<T>(event: RequestEvent, collection: Collection) {
     return r
 }
 
-export async function create<T>(event: RequestEvent, schema: ZodSchema, collection: Collection) {
+export async function create<T>(event: RequestEvent, schema: ZodType<Record<string, any>>, collection: Collection) {
     const searchParams = Object.fromEntries(event.url.searchParams);
     const safeSearchParams = RecordOptionsSchema.parse(searchParams);
 
@@ -96,7 +96,7 @@ export async function create<T>(event: RequestEvent, schema: ZodSchema, collecti
     return r
 }
 
-export async function update<T>(event: RequestEvent, schema: ZodSchema, collection: Collection) {
+export async function update<T>(event: RequestEvent, schema: ZodType<Record<string, any>>, collection: Collection) {
     const params = event.params
     const safeParams = RecordIdSchema.parse(params);
 

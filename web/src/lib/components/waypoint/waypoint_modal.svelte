@@ -8,7 +8,7 @@
     import { cloneDeep } from "$lib/util/deep_util";
     import { icons } from "$lib/util/icon_util";
     import EXIF from "$lib/vendor/exif-js/exif";
-    import { validator } from "@felte/validator-zod";
+    import { validator } from "$lib/vendor/felte-validator-zod";
     import { createForm } from "felte";
     import { _ } from "svelte-i18n";
     import { z } from "zod";

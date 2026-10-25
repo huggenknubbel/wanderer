@@ -33,7 +33,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@felte/validator-zod": "^1.0.18",
     "@fortawesome/fontawesome-free": "^7.3.1",
     "@sveltejs/adapter-node": "^5.5.7",
     "@tailwindcss/vite": "^4.3.3",

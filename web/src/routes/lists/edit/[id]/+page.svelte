@@ -34,7 +34,7 @@
         formatElevation,
         formatTimeHHMM,
     } from "$lib/util/format_util";
-    import { validator } from "@felte/validator-zod";
+    import { validator } from "$lib/vendor/felte-validator-zod";
     import { createForm } from "felte";
     import { z } from "zod";
     import { onMount, untrack } from "svelte";

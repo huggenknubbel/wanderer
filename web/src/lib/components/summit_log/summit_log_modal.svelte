@@ -6,7 +6,7 @@
     import { summitLog } from "$lib/stores/summit_log_store";
     import { fetchGPX } from "$lib/stores/trail_store";
     import { cloneDeep } from "$lib/util/deep_util";
-    import { validator } from "@felte/validator-zod";
+    import { validator } from "$lib/vendor/felte-validator-zod";
     import { createForm } from "felte";
     import { _ } from "svelte-i18n";
     import { z } from "zod";

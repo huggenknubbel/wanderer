@@ -8,7 +8,7 @@
     import { theme } from "$lib/stores/theme_store";
     import { show_toast } from "$lib/stores/toast_store.svelte";
     import { users_confirm_reset } from "$lib/stores/user_store";
-    import { validator } from "@felte/validator-zod";
+    import { validator } from "$lib/vendor/felte-validator-zod";
     import { createForm } from "felte";
     import { _ } from "svelte-i18n";
     import { z } from "zod";
