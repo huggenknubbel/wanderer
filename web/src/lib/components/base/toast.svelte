@@ -16,8 +16,8 @@
     <div
         class="fixed px-4 py-3 shadow-xl rounded-xl border border-input-border right-4 bg-white text-gray-500 flex items-center max-w-md"
         style="z-index: 1001; bottom: {16 + i * 72}px"
-        in:fade={{ duration: 250 }}
-        out:fade={{ duration: 250 }}
+        in:fade|global={{ duration: 250 }}
+        out:fade|global={{ duration: 250 }}
         onmouseenter={() => pauseToast(t)}
         onmouseleave={() => resumeToast(t)}
         onfocusin={() => pauseToast(t)}
