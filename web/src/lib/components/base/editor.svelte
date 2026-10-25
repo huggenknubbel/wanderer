@@ -327,7 +327,7 @@
         } catch (e) {
             if (
                 e instanceof ZodError &&
-                e.errors[0].code === "invalid_string"
+                e.issues[0].code === "invalid_format"
             ) {
                 linkURLError = $_("not-a-valid-url");
             }

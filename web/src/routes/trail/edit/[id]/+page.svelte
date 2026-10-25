@@ -111,7 +111,7 @@
         haversineCumulatedDistanceWgs84,
         MIN_STORED_DISTANCE_METERS,
     } from "$lib/vendor/maplibre-elevation-profile/tools";
-    import { validator } from "@felte/validator-zod";
+    import { validator } from "$lib/vendor/felte-validator-zod";
     import cryptoRandomString from "crypto-random-string";
     import { createForm } from "felte";
     import * as M from "maplibre-gl";

@@ -6,7 +6,7 @@
         uploadStore,
         type Upload,
     } from "$lib/stores/upload_store.svelte";
-    import { validator } from "@felte/validator-zod";
+    import { validator } from "$lib/vendor/felte-validator-zod";
     import { createForm } from "felte";
     import { _ } from "svelte-i18n";
     import { z } from "zod";
