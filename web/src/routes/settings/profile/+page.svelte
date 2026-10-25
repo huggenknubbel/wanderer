@@ -1,15 +1,16 @@
 <script lang="ts">
-    import Button from "$lib/components/base/button.svelte";
-    import Editor from "$lib/components/base/editor.svelte";
-    import { settings_update } from "$lib/stores/settings_store";
-    import { show_toast } from "$lib/stores/toast_store.svelte.js";
-    import { currentUser, users_update } from "$lib/stores/user_store";
+    import Button from "#lib/components/base/button.svelte";
+    import Editor from "#lib/components/base/editor.svelte";
+    import { settings_update } from "#lib/stores/settings_store.ts";
+    import { show_toast } from "#lib/stores/toast_store.svelte.ts";
+    import { currentUser, users_update } from "#lib/stores/user_store.ts";
     import {
         designSelectableCategories,
         displayCategoryIcon,
         displayCategoryName,
-    } from "$lib/util/category_util";
-    import { getFileURL } from "$lib/util/file_util";
+    } from "#lib/util/category_util.ts";
+    import { getFileURL } from "#lib/util/file_util.ts";
+    import { avatarUploadErrorMessage } from "#lib/util/avatar_upload_error.ts";
     import { untrack } from "svelte";
     import { _, locale } from "svelte-i18n";
 
@@ -36,15 +37,27 @@
         if (!$currentUser) {
             return;
         }
-        const files = (
-            document.getElementById("avatarInput") as HTMLInputElement
-        ).files;
+        const input = document.getElementById("avatarInput") as HTMLInputElement;
+        const files = input.files;
 
         if (!files || files.length == 0) {
             return;
         }
 
-        await users_update($currentUser!, files[0]);
+        try {
+            await users_update($currentUser!, files[0]);
+        } catch (e) {
+            const message = avatarUploadErrorMessage(e);
+            show_toast({
+                type: "error",
+                icon: "close",
+                text: $_(message.key, { values: message.values }),
+            }, 7000);
+            console.error(e);
+        } finally {
+            // Allow picking the same file again after a failed upload.
+            input.value = "";
+        }
     }
 
     async function handleBioSave() {
@@ -81,7 +94,7 @@
                     class="object-cover h-full"
                     src={getFileURL($currentUser, $currentUser.avatar, "300x300") ||
                         `https://api.dicebear.com/7.x/initials/svg?seed=${$currentUser.username?.toLowerCase()}&backgroundType=gradientLinear`}
-                    alt="avatar"
+                    alt={$_("avatar")}
                 />
                 <button
                     aria-label="Open file browser"
@@ -94,7 +107,7 @@
                     type="file"
                     name="avatar"
                     id="avatarInput"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
                     style="display: none;"
                     onchange={handleAvatarSelection}
                 />

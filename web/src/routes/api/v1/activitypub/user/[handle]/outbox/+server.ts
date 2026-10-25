@@ -1,12 +1,11 @@
-import { env } from '$env/dynamic/private';
-import { env as publicEnv } from '$env/dynamic/public';
+import { ORIGIN } from '$app/env/private';
 
-import type { Activity } from '$lib/models/activitypub/activity';
-import type { Actor } from '$lib/models/activitypub/actor';
-import { RecordListOptionsSchema } from '$lib/models/api/base_schema';
-import { splitUsername } from '$lib/util/activitypub_util';
-import { handleError } from '$lib/util/api_util';
-import { error, json, type RequestEvent } from '@sveltejs/kit';
+import type { Activity } from '#lib/models/activitypub/activity.ts';
+import type { Actor } from '#lib/models/activitypub/actor.ts';
+import { RecordListOptionsSchema } from '#lib/models/api/base_schema.ts';
+import { splitUsername } from '#lib/util/activitypub_util.ts';
+import { handleError } from '#lib/util/api_util.ts';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import type { APActivity, APOrderedCollectionPage, APRoot } from 'activitypub-types';
 import type { ListResult } from 'pocketbase';
 
@@ -56,10 +55,10 @@ export async function GET(event: RequestEvent) {
 
         let fullUsername = event.params.handle;
         if (!fullUsername) {
-            return json({ message: "Bad request" }, { status: 400 });
+            return Response.json({ message: "Bad request" }, { status: 400 });
         }
 
-        const [username, domain] = splitUsername(fullUsername, env.ORIGIN)
+        const [username, domain] = splitUsername(fullUsername, ORIGIN)
 
 
         const actor: Actor = await event.locals.pb.collection("activitypub_actors").getFirstListItem(`preferred_username:lower='${username?.toLowerCase()}'&&is_local=true`)
@@ -95,7 +94,18 @@ export async function GET(event: RequestEvent) {
         const headers = new Headers()
         headers.append("Content-Type", "application/activity+json")
 
-        return json(outbox, { headers });
+        // Without ?page, serve the collection itself (required by GoToSocial).
+        if (!event.url.searchParams.has("page")) {
+            return Response.json({
+                "@context": "https://www.w3.org/ns/activitystreams",
+                id: `${id}/outbox`,
+                type: "OrderedCollection",
+                totalItems: activities.totalItems,
+                first: `${id}/outbox?page=1`,
+            }, { headers });
+        }
+
+        return Response.json(outbox, { headers });
     } catch (e) {
         return handleError(e)
     }

@@ -1,7 +1,8 @@
-import { CommentUpdateSchema } from "$lib/models/api/comment_schema";
-import type { Comment } from "$lib/models/comment";
-import { Collection, handleError, remove, show, update } from "$lib/util/api_util";
-import { json, type RequestEvent } from "@sveltejs/kit";
+import { CommentUpdateSchema } from "#lib/models/api/comment_schema.ts";
+import type { Comment } from "#lib/models/comment.ts";
+import { Collection, handleError, remove, show, update } from "#lib/util/api_util.ts";
+import type { RequestEvent } from "@sveltejs/kit";
+import { acceptsActivityPub, activityPubObject } from "#lib/server/activitypub_objects.ts";
 
 /**
  * @swagger
@@ -33,9 +34,13 @@ import { json, type RequestEvent } from "@sveltejs/kit";
  *         description: Internal Server Error
  */
 export async function GET(event: RequestEvent) {
+    if (acceptsActivityPub(event.request)) {
+        return activityPubObject(event, `/api/v1/activitypub/comment/${event.params.id}`);
+    }
+
     try {
         const r = await show<Comment>(event, Collection.comments)
-        return json(r)
+        return Response.json(r, { headers: { vary: "Accept" } })
     } catch (e: any) {
         return handleError(e)
     }
@@ -77,7 +82,7 @@ export async function GET(event: RequestEvent) {
 export async function POST(event: RequestEvent) {
     try {
         const r = await update<Comment>(event, CommentUpdateSchema, Collection.comments)
-        return json(r);
+        return Response.json(r);
     } catch (e: any) {
         return handleError(e)
     }
@@ -107,7 +112,7 @@ export async function POST(event: RequestEvent) {
 export async function DELETE(event: RequestEvent) {
     try {
         const r = await remove(event, Collection.comments)
-        return json(r);
+        return Response.json(r);
     } catch (e: any) {
         return handleError(e)
     }

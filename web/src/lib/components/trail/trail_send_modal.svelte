@@ -1,13 +1,13 @@
 <script lang="ts">
-    import Modal from "$lib/components/base/modal.svelte";
-    import type { PluginInstance } from "$lib/models/plugin_instance";
-    import type { PluginProvider } from "$lib/models/plugin_provider";
-    import type { Trail } from "$lib/models/trail";
-    import { plugin_instances_index } from "$lib/stores/plugin_instance_store";
-    import { plugins_index } from "$lib/stores/plugin_store";
-    import { theme } from "$lib/stores/theme_store";
-    import { show_toast } from "$lib/stores/toast_store.svelte";
-    import { pluginTitle as localizedPluginTitle } from "$lib/util/plugin_i18n";
+    import Modal from "#lib/components/base/modal.svelte";
+    import type { PluginInstance } from "#lib/models/plugin_instance.ts";
+    import type { PluginProvider } from "#lib/models/plugin_provider.ts";
+    import type { Trail } from "#lib/models/trail.ts";
+    import { plugin_instances_index } from "#lib/stores/plugin_instance_store.ts";
+    import { plugins_index } from "#lib/stores/plugin_store.ts";
+    import { theme } from "#lib/stores/theme_store.ts";
+    import { show_toast } from "#lib/stores/toast_store.svelte.ts";
+    import { pluginTitle as localizedPluginTitle } from "#lib/util/plugin_i18n.ts";
     import { onMount } from "svelte";
     import { _, locale } from "svelte-i18n";
 
@@ -17,6 +17,9 @@
     }
 
     let { trail, share }: Props = $props();
+
+    const uid = $props.id();
+    const modalId = `send-modal-${uid}`;
 
     let modal: Modal;
     let loading = $state(false);
@@ -106,7 +109,7 @@
     }
 </script>
 
-<Modal id="send-modal" title={$_("send-to")} size="md:min-w-sm" bind:this={modal}>
+<Modal id={modalId} title={$_("send-to")} size="md:min-w-sm" bind:this={modal}>
     {#snippet content()}
         {#if loading}
             <div class="flex justify-center p-4">

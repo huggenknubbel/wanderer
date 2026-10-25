@@ -1,8 +1,9 @@
-import { TrailUpdateSchema } from '$lib/models/api/trail_schema';
-import type { Trail } from "$lib/models/trail";
-import { Collection, handleError, remove, update } from "$lib/util/api_util";
-import { json, type RequestEvent } from "@sveltejs/kit";
+import { TrailUpdateSchema } from '#lib/models/api/trail_schema.ts';
+import type { Trail } from "#lib/models/trail.ts";
+import { Collection, handleError, remove, update } from "#lib/util/api_util.ts";
+import type { RequestEvent } from "@sveltejs/kit";
 import type PocketBase from "pocketbase";
+import { acceptsActivityPub, activityPubObject } from "#lib/server/activitypub_objects.ts";
 
 /**
  * @swagger
@@ -37,6 +38,10 @@ import type PocketBase from "pocketbase";
 export async function GET(event: RequestEvent) {
     const { url, params } = event;
 
+    if (acceptsActivityPub(event.request)) {
+        return activityPubObject(event, `/api/v1/activitypub/trail/${params.id}`);
+    }
+
     try {
         let trail: Trail = await event.locals.pb.send(`/remote/trail/${params.id}?` + url.searchParams, {
             method: "GET",
@@ -45,7 +50,7 @@ export async function GET(event: RequestEvent) {
 
         await enrichRecord(event.locals.pb, trail);
         trail.expand?.waypoints_via_trail?.sort((a, b) => (a.distance_from_start ?? 0) - (b.distance_from_start ?? 0))
-        return json(trail)
+        return Response.json(trail, { headers: { vary: "Accept" } })
     } catch (e: any) {
         return handleError(e);
     }
@@ -55,7 +60,7 @@ export async function POST(event: RequestEvent) {
     try {
         const r = await update<Trail>(event, TrailUpdateSchema, Collection.trails)
         await enrichRecord(event.locals.pb, r)
-        return json(r);
+        return Response.json(r);
     } catch (e: any) {
         return handleError(e)
     }
@@ -64,7 +69,7 @@ export async function POST(event: RequestEvent) {
 export async function DELETE(event: RequestEvent) {
     try {
         const r = await remove(event, Collection.trails)
-        return json(r);
+        return Response.json(r);
     } catch (e: any) {
         return handleError(e)
     }

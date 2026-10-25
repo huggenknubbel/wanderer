@@ -3,11 +3,29 @@ title: Manual Docker Setup
 description: Detailed installation instructions for Docker
 ---
 
-You can install <span class="-tracking-[0.075em]">wanderer</span> components either via Docker ([Quick Setup](./quick) or [Manual Setup](./docker)) or [from source](./installation-from-source).
+You can install <span class="-tracking-[0.075em]">wanderer</span> components either via Docker ([Quick Setup](./quick) or [Manual Setup](./docker)) or [from source](./from-source).
+
+## Prerequisites
+
+<span class="-tracking-[0.075em]">wanderer</span> uses several secrets for database access, to encrypt passwords, private keys, and to secure communication. The secrets are: `MEILI_MASTER_KEY`, `POCKETBASE_ENCRYPTION_KEY` and `POCKETBASE_PROXY_SECRET`. You need to generate these secrets. For example using:
+
+```bash
+# MEILI_MASTER_KEY and POCKETBASE_PROXY_SECRET (one each)
+openssl rand -hex 32
+# Example output: 1e85a99427bd2543aacc24c99419183756eaeccd0e3485c9ac2ac2ab110e72f1
+
+# POCKETBASE_ENCRYPTION_KEY (must be exactly 32 characters)
+openssl rand -hex 16
+# Example output: ce7f0ddb97100c42e6409a8537c11e23
+```
+
+:::caution
+Do not share these keys with anyone!
+:::
 
 ## Start
 
-After cloning the repository, you will find a [`docker-compose.yml`](https://github.com/open-wanderer/wanderer/blob/main/docker-compose.yml) and a [`.env.example`](https://github.com/open-wanderer/wanderer/blob/main/.env.example) file in the root directory. Copy `.env.example` to `.env` and fill in `ORIGIN` and the required secrets `MEILI_MASTER_KEY`, `POCKETBASE_ENCRYPTION_KEY` and `POCKETBASE_PROXY_SECRET`. The [environment configuration](/run/environment-configuration) shows how to generate them:
+After cloning the repository, you will find a [`docker-compose.yml`](https://github.com/open-wanderer/wanderer/blob/main/docker-compose.yml) and a [`.env.example`](https://github.com/open-wanderer/wanderer/blob/main/.env.example) file in the root directory. Copy `.env.example` to `.env` and fill in `ORIGIN` and the required secrets `MEILI_MASTER_KEY`, `POCKETBASE_ENCRYPTION_KEY` and `POCKETBASE_PROXY_SECRET` with the values you generated [above](#prerequisites):
 
 ```bash
 cp .env.example .env
@@ -50,10 +68,12 @@ Make sure to set the `ORIGIN` environment variable to the full public URL (inclu
 
 ## Volumes
 
-By default, two volumes are mounted:
+By default, four volumes are mounted:
 
 - Meilisearch index data: `./data/data.ms`
 - PocketBase data: `./data/pb_data`
+- Installed plugins: `./data/plugins`
+- Uploads: `./data/uploads`
 
 These can be changed to bind mounts or other volume strategies if needed.
 

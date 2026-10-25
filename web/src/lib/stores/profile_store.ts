@@ -1,18 +1,17 @@
-import type { FeedItem } from "$lib/models/feed";
-import type { ListFilter } from "$lib/models/list";
-import type { SummitLogFilter } from "$lib/models/summit_log";
-import { defaultTrailSearchAttributes, Trail, type TrailFilter, type TrailSearchResult } from "$lib/models/trail";
-import { APIError } from "$lib/util/api_util";
+import type { FeedItem } from "#lib/models/feed.ts";
+import type { ListFilter } from "#lib/models/list.ts";
+import type { SummitLogFilter } from "#lib/models/summit_log.ts";
+import { defaultTrailSearchAttributes, Trail, type TrailFilter, type TrailSearchResult } from "#lib/models/trail.ts";
+import { APIError } from "#lib/util/api_util.ts";
 import type { Hits } from "meilisearch";
 import type { ListResult } from "pocketbase";
 import { searchResultToLists } from "./list_store";
 import type { ListSearchResult } from "./search_store";
 import { searchResultToTrailList } from "./trail_store";
-import type { Actor } from "$lib/models/activitypub/actor";
-import type { StatisticActivity } from "$lib/models/statistic_activity";
+import type { Actor } from "#lib/models/activitypub/actor.ts";
+import type { StatisticActivity } from "#lib/models/statistic_activity.ts";
 
 let feed: FeedItem[] = []
-let follows: Actor[] = [];
 
 export async function profile_show(handle: string, f: (url: RequestInfo | URL, config?: RequestInit) => Promise<Response> = fetch) {
     let r = await f('/api/v1/profile/' + handle, {
@@ -147,10 +146,11 @@ export async function profile_stats_index(handle: string, filter: SummitLogFilte
 
 }
 
-export async function profile_follows_index(handle: string, type: "followers" | "following", page: number, f: (url: RequestInfo | URL, config?: RequestInit) => Promise<Response> = fetch) {
+export async function profile_follows_index(handle: string, type: "followers" | "following", page: number, f: (url: RequestInfo | URL, config?: RequestInit) => Promise<Response> = fetch, cursor?: string) {
     const r = await f(`/api/v1/profile/${handle}/follows?` + new URLSearchParams({
         type,
         page: page.toString(),
+        ...(cursor ? { cursor } : {}),
     }), {
         method: 'GET',
     })
@@ -160,11 +160,8 @@ export async function profile_follows_index(handle: string, type: "followers" | 
         throw new APIError(r.status, response.message, response.detail)
     }
 
-    const fetchedFollows: ListResult<Actor> = await r.json();
+    // Only this page's items; the caller owns the list it appends them to
+    const fetchedFollows: ListResult<Actor> & { next?: string } = await r.json();
 
-    const result = page > 1 ? [...follows, ...fetchedFollows.items] : fetchedFollows.items
-
-    follows = result;
-
-    return { ...fetchedFollows, items: result };
+    return fetchedFollows;
 }

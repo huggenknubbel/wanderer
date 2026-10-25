@@ -1,9 +1,9 @@
 <script lang="ts">
     import { page } from "$app/state";
-    import MetaTags from "$lib/components/base/meta_tags.svelte";
-    import TrailInfoPanel from "$lib/components/trail/trail_info_panel.svelte";
-    import { trail } from "$lib/stores/trail_store";
-    import { getFileURL } from "$lib/util/file_util.js";
+    import MetaTags from "#lib/components/base/meta_tags.svelte";
+    import TrailInfoPanel from "#lib/components/trail/trail_info_panel.svelte";
+    import { trail } from "#lib/stores/trail_store.ts";
+    import { getFileURL } from "#lib/util/file_util.ts";
     import { _ } from "svelte-i18n";
 
     let { data } = $props();
@@ -23,7 +23,7 @@
                 authors: [
                     `${page.url.origin}/profile/@${data.trail.expand?.author?.preferred_username ?? ""}`,
                 ],
-                tags: data.trail.expand?.tags?.map((t) => t.name),
+                tags: [...new Set(data.trail.expand?.tags?.map((t) => t.name) ?? [])],
             },
             images: data.trail.photos.map((p) => ({
                 url: page.url.origin + getFileURL(data.trail, p),

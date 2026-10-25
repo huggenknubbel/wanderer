@@ -1,7 +1,7 @@
-import { error, isHttpError, json, type NumericRange, type RequestEvent } from "@sveltejs/kit";
+import { error, isHttpError, type RequestEvent } from "@sveltejs/kit";
 import { ClientResponseError, type ListResult } from "pocketbase";
-import { ZodError, type ZodSchema } from "zod";
-import { RecordListOptionsSchema, RecordIdSchema, RecordOptionsSchema } from "$lib/models/api/base_schema";
+import { ZodError, type ZodType } from "zod";
+import { RecordListOptionsSchema, RecordIdSchema, RecordOptionsSchema } from "#lib/models/api/base_schema.ts";
 
 export class APIError extends Error {
     status: number;
@@ -84,7 +84,7 @@ export async function show<T>(event: RequestEvent, collection: Collection) {
     return r
 }
 
-export async function create<T>(event: RequestEvent, schema: ZodSchema, collection: Collection) {
+export async function create<T>(event: RequestEvent, schema: ZodType<Record<string, any>>, collection: Collection) {
     const searchParams = Object.fromEntries(event.url.searchParams);
     const safeSearchParams = RecordOptionsSchema.parse(searchParams);
 
@@ -96,7 +96,7 @@ export async function create<T>(event: RequestEvent, schema: ZodSchema, collecti
     return r
 }
 
-export async function update<T>(event: RequestEvent, schema: ZodSchema, collection: Collection) {
+export async function update<T>(event: RequestEvent, schema: ZodType<Record<string, any>>, collection: Collection) {
     const params = event.params
     const safeParams = RecordIdSchema.parse(params);
 
@@ -112,6 +112,7 @@ export async function update<T>(event: RequestEvent, schema: ZodSchema, collecti
 }
 
 export async function uploadCreate<T>(event: RequestEvent, collection: Collection) {
+    if (!event.locals.user) throw error(401, "Unauthorized");
     const searchParams = Object.fromEntries(event.url.searchParams);
     const safeSearchParams = RecordOptionsSchema.parse(searchParams);
 
@@ -124,6 +125,7 @@ export async function uploadCreate<T>(event: RequestEvent, collection: Collectio
 }
 
 export async function uploadUpdate<T>(event: RequestEvent, collection: Collection, data?: FormData) {
+    if (!event.locals.user) throw error(401, "Unauthorized");
     const params = event.params
     const safeParams = RecordIdSchema.parse(params);
 
@@ -142,9 +144,59 @@ export async function uploadUpdate<T>(event: RequestEvent, collection: Collectio
         });
     }
 
+    stripImmutableUpdateFields(collection, data);
+
     const r = await event.locals.pb.collection(Collection[collection]).update<T>(safeParams.id, data, safeSearchParams)
 
     return r
+}
+
+const immutableUpdateFields: Partial<Record<Collection, readonly string[]>> = {
+    [Collection.trails]: ["author"],
+    [Collection.lists]: ["author"],
+    [Collection.comments]: ["author", "trail"],
+    [Collection.waypoints]: ["author", "trail"],
+    [Collection.summit_logs]: ["author", "trail"],
+    [Collection.plugin_instances]: ["user", "plugin_id"],
+    [Collection.trail_share]: ["trail"],
+    [Collection.list_share]: ["list"],
+    [Collection.trail_link_share]: ["trail"],
+    [Collection.follows]: ["follower"],
+    [Collection.settings]: ["user"],
+    [Collection.user_category_preferences]: ["user"],
+    [Collection.user_subcategory_preferences]: ["user"],
+};
+
+// API update bodies cannot change ownership or protected relation bindings.
+// Include PocketBase's modifiers and its JSON part inside multipart bodies.
+function stripImmutableUpdateFields(collection: Collection, data: FormData) {
+    const fields = immutableUpdateFields[collection];
+    if (!fields) return;
+
+    const protectedKey = (key: string) => fields.includes(key.replace(/^[+-]+|[+-]+$/g, ""));
+    for (const key of [...data.keys()]) {
+        if (protectedKey(key)) data.delete(key);
+    }
+
+    const payloads = data.getAll("@jsonPayload");
+    if (!payloads.length) return;
+    const sanitizedPayloads = payloads.map((payload) => {
+        let body: unknown;
+        try {
+            body = typeof payload === "string" ? JSON.parse(payload) : null;
+        } catch {
+            body = null;
+        }
+        if (!body || typeof body !== "object" || Array.isArray(body)) {
+            throw new ClientResponseError({ status: 400, response: { message: "invalid_json_payload" } });
+        }
+        for (const key of Object.keys(body)) {
+            if (protectedKey(key)) delete (body as Record<string, unknown>)[key];
+        }
+        return JSON.stringify(body);
+    });
+    data.delete("@jsonPayload");
+    for (const payload of sanitizedPayloads) data.append("@jsonPayload", payload);
 }
 
 /**
@@ -167,12 +219,15 @@ export function assertFileField(data: FormData, fileFields: readonly string[]) {
 }
 
 export async function upload<T>(event: RequestEvent, collection: Collection, fileFields: readonly string[]) {
+    if (!event.locals.user) throw error(401, "Unauthorized");
     const params = event.params
     const safeParams = RecordIdSchema.parse(params);
 
     const data = await event.request.formData();
 
     assertFileField(data, fileFields);
+
+    stripImmutableUpdateFields(collection, data);
 
     const r = await event.locals.pb.collection(Collection[collection]).update<T>(safeParams.id, data)
 
@@ -189,22 +244,26 @@ export async function remove(event: RequestEvent, collection: Collection) {
 }
 
 export function handleError(e: any) {
-    if (isHttpError(e)) {
+    // Upload helpers reject anonymous requests before reading the body; API
+    // clients expect that rejection as JSON rather than an error page.
+    if (isHttpError(e, 401)) {
+        return Response.json({ message: e.body.message }, { status: 401 })
+    } else if (isHttpError(e)) {
         throw e;
     } else if (e instanceof ZodError) {
-        return json({ message: "invalid_params", detail: e.issues }, { status: 400 })
+        return Response.json({ message: "invalid_params", detail: e.issues }, { status: 400 })
     } else if (e instanceof ClientResponseError && e.status > 0) {
-        return json({ ...e.response, message: e.message, detail: e.originalError.data }, { status: e.status })
+        return Response.json({ ...e.response, message: e.message, detail: e.originalError.data }, { status: e.status })
     } else if (e instanceof SyntaxError) {
-        return json({ message: "invalid_json" }, { status: 400 })
+        return Response.json({ message: "invalid_json" }, { status: 400 })
     } else if (e instanceof Error) {
-        return json({ message: e.message }, { status: 500 })
+        return Response.json({ message: e.message }, { status: "status" in e && e.status === 413 ? 413 : 500 })
     } else {
         const message = typeof e?.message === "string"
             ? e.message
             : typeof e === "string"
                 ? e
                 : "internal_server_error";
-        return json({ message, detail: e }, { status: 500 })
+        return Response.json({ message, detail: e }, { status: 500 })
     }
 }

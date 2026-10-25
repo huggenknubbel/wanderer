@@ -1,14 +1,15 @@
 <script lang="ts">
+    import { sanitizeHTML } from "#lib/util/sanitize_html.ts";
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
-    import emptyStateTrailDark from "$lib/assets/svgs/empty_states/empty_state_trail_dark.svg";
-    import emptyStateTrailLight from "$lib/assets/svgs/empty_states/empty_state_trail_light.svg";
-    import FeedCard from "$lib/components/profile/feed_card.svelte";
-    import type { FeedItem } from "$lib/models/feed.js";
+    import emptyStateTrailDark from "#lib/assets/svgs/empty_states/empty_state_trail_dark.svg";
+    import emptyStateTrailLight from "#lib/assets/svgs/empty_states/empty_state_trail_light.svg";
+    import FeedCard from "#lib/components/profile/feed_card.svelte";
+    import type { FeedItem } from "#lib/models/feed.ts";
 
-    import { profile_feed_index } from "$lib/stores/profile_store.js";
-    import { theme } from "$lib/stores/theme_store.js";
-    import { getFileURL } from "$lib/util/file_util.js";
+    import { profile_feed_index } from "#lib/stores/profile_store.ts";
+    import { theme } from "#lib/stores/theme_store.ts";
+    import { getFileURL } from "#lib/util/file_util.ts";
     import { untrack } from "svelte";
     import { _ } from "svelte-i18n";
 
@@ -78,7 +79,7 @@
             {/if}
         </h4>
         {#if data.profile.bio.length}
-            <p class="prose dark:prose-invert">{@html data.profile.bio}</p>
+            <div class="prose dark:prose-invert">{@html sanitizeHTML(data.profile.bio)}</div>
         {:else if data.isOwnProfile}
             <a class="btn-primary inline-block" href="/settings/profile"
                 >+ {$_("add-bio")}</a

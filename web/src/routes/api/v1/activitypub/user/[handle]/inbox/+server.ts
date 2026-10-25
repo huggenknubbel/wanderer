@@ -1,9 +1,10 @@
-import { env as publicEnv } from '$env/dynamic/public';
-import { env as privateEnv } from '$env/dynamic/private';
+import { POCKETBASE_PROXY_SECRET } from '$app/env/private';
 
-import { handleError } from '$lib/util/api_util';
-import { json, type RequestEvent } from '@sveltejs/kit';
+import { handleError } from '#lib/util/api_util.ts';
+import { forwardableHeaders } from '#lib/server/http.ts';
+import type { RequestEvent } from '@sveltejs/kit';
 import type { APActivity } from 'activitypub-types';
+import { INBOX_BODY_LIMIT, readBoundedRequestText } from '#lib/server/request_body.ts';
 
 /**
  * @swagger
@@ -37,24 +38,21 @@ export async function POST(event: RequestEvent) {
 
 
     try {
-        const bodyText = await event.request.text()
+        const bodyText = await readBoundedRequestText(event.request, INBOX_BODY_LIMIT)
         const activity: APActivity = JSON.parse(bodyText)
         if (!activity.actor) {
-            return json("Bad request", { status: 400 });
+            return Response.json("Bad request", { status: 400 });
         }
 
-        // Clone original headers to ensure no loss
-        const originalHeaders: Record<string, string> = {};
-        event.request.headers.forEach((value, key) => {
-            originalHeaders[key] = value
-        });
+        // Clone original headers (the backend verifies the signature)
+        const originalHeaders = forwardableHeaders(event.request.headers);
 
         // Add forwarded path. Set after the loop so a client cannot smuggle its own value.
         originalHeaders['X-Forwarded-Path'] = event.url.pathname;
 
         // Authenticate this internal hop to the backend so the header above is only
         // ever trusted when it originates from this frontend proxy.
-        originalHeaders['X-Internal-Secret'] = privateEnv.POCKETBASE_PROXY_SECRET ?? '';
+        originalHeaders['X-Internal-Secret'] = POCKETBASE_PROXY_SECRET ?? '';
 
         const success = await event.locals.pb.send("/activitypub/activity/process", {
             method: "POST",
@@ -64,13 +62,13 @@ export async function POST(event: RequestEvent) {
         })
 
         if (success === false) {
-            return json("Invalid header signature", { status: 400 });
+            return Response.json("Invalid header signature", { status: 400 });
         }
 
         const headers = new Headers()
         headers.append("Content-Type", "application/activity+json")
 
-        return json("", { status: 200, headers });
+        return Response.json("", { status: 200, headers });
     } catch (e) {
         return handleError(e)
     }

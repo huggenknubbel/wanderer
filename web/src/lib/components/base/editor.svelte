@@ -18,9 +18,9 @@
     import Toggle from "./toggle.svelte";
     import type { SearchItem } from "./search.svelte";
     import type { SuggestionProps } from "@tiptap/suggestion";
-    import type { Actor, ActorSearchResult } from "$lib/models/activitypub/actor";
-    import { searchActors } from "$lib/stores/search_store";
-    import { show_toast } from "$lib/stores/toast_store.svelte";
+    import type { Actor, ActorSearchResult } from "#lib/models/activitypub/actor.ts";
+    import { searchActors } from "#lib/stores/search_store.ts";
+    import { show_toast } from "#lib/stores/toast_store.svelte.ts";
 
     let element: HTMLElement;
     let editor: Editor | undefined = $state();
@@ -44,6 +44,11 @@
         extraClasses = "",
         searchListPosition = "absolute",
     }: Props = $props();
+
+    const uid = $props.id();
+    const modalId = `editor-modal-${uid}`;
+    const wrapperId = `editor-wrapper-${uid}`;
+    const mentionListId = `mention-list-${uid}`;
 
     const fontSizes: SelectItem[] = [
         { text: $_("paragraph"), value: "p" },
@@ -130,14 +135,14 @@
                             let component: DropdownList;
                             const componentState: any = $state({
                                 items: [],
-                                id: "mention-list",
+                                id: mentionListId,
                             });
 
                             function updatePosition({
                                 clientRect,
                             }: SuggestionProps) {
                                 const searchListElement =
-                                    document.getElementById("mention-list");
+                                    document.getElementById(mentionListId);
                                 if (!clientRect || !searchListElement) return;
                                 const box = clientRect();
                                 if (!box) {
@@ -322,7 +327,7 @@
         } catch (e) {
             if (
                 e instanceof ZodError &&
-                e.errors[0].code === "invalid_string"
+                e.issues[0].code === "invalid_format"
             ) {
                 linkURLError = $_("not-a-valid-url");
             }
@@ -336,7 +341,7 @@
     }
 </script>
 
-<div id="editor-wrapper">
+<div id={wrapperId}>
     {#if label.length}
         <p class="text-sm font-medium mb-1">
             {label}
@@ -451,7 +456,7 @@
     {/if}
 </div>
 <Modal
-    id="editor-modal"
+    id={modalId}
     title={"Insert/edit link"}
     size="md:min-w-lg"
     bind:this={modal}

@@ -1,14 +1,14 @@
 <script lang="ts">
-    import Modal from "$lib/components/base/modal.svelte";
-    import type { Trail } from "$lib/models/trail";
-    import { TrailShare } from "$lib/models/trail_share";
+    import Modal from "#lib/components/base/modal.svelte";
+    import type { Trail } from "#lib/models/trail.ts";
+    import { TrailShare } from "#lib/models/trail_share.ts";
     import {
         shares,
         trail_share_create,
         trail_share_delete,
         trail_share_index,
         trail_share_update,
-    } from "$lib/stores/trail_share_store";
+    } from "#lib/stores/trail_share_store.ts";
     import { _ } from "svelte-i18n";
     import ActorSearch from "../actor_search.svelte";
     import Button from "../base/button.svelte";
@@ -16,13 +16,13 @@
     import Select from "../base/select.svelte";
     import type { RadioItem } from "../base/radio_group.svelte";
     import RadioGroup from "../base/radio_group.svelte";
-    import { TrailLinkShare } from "$lib/models/trail_link_share";
+    import { TrailLinkShare } from "#lib/models/trail_link_share.ts";
     import {
         linkShares,
         trail_link_share_create,
         trail_link_share_delete,
         trail_link_share_index,
-    } from "$lib/stores/trail_link_share_store";
+    } from "#lib/stores/trail_link_share_store.ts";
 
     interface Props {
         trail?: Trail;
@@ -30,6 +30,9 @@
     }
 
     let { trail, onsave }: Props = $props();
+
+    const uid = $props.id();
+    const modalId = `share-modal-${uid}`;
 
     let modal: Modal;
 
@@ -135,7 +138,7 @@
 </script>
 
 <Modal
-    id="share-modal"
+    id={modalId}
     title={$_("share-this-trail")}
     size="md:min-w-sm overflow-visible"
     bind:this={modal}
@@ -204,7 +207,7 @@
 
             <h4 class="font-semibold mt-4 mb-2">{$_("public-access")}</h4>
             <RadioGroup
-                name="account"
+                name={`${modalId}-public-access`}
                 items={publicShareItems}
                 selected={$linkShares.length == 0 ? 0 : 1}
                 onchange={handlePublicAccessChange}

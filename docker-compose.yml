@@ -38,7 +38,7 @@ services:
     environment:
       <<: *env
     ports:
-      - "8090:8090"
+      - "127.0.0.1:8090:8090"
     networks:
       - wanderer
     restart: unless-stopped
@@ -64,7 +64,7 @@ services:
       <<: *env
       PUBLIC_POCKETBASE_URL: http://db:8090
       UPLOAD_FOLDER: /app/uploads
-      BODY_SIZE_LIMIT: ${BODY_SIZE_LIMIT:-Infinity}
+      BODY_SIZE_LIMIT: ${BODY_SIZE_LIMIT:-2G}
     volumes:
       - ./data/uploads:/app/uploads
       # - ./data/about.md:/app/build/client/md/about.md

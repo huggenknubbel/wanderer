@@ -1,7 +1,8 @@
 <script lang="ts">
-    import type { Trail } from "$lib/models/trail";
-    import { getFileURL, isVideoURL } from "$lib/util/file_util";
-    import { formatDistance } from "$lib/util/format_util";
+    import { sanitizeHTML } from "#lib/util/sanitize_html.ts";
+    import type { Trail } from "#lib/models/trail.ts";
+    import { getFileURL, isVideoURL } from "#lib/util/file_util.ts";
+    import { formatDistance } from "#lib/util/format_util.ts";
     import { _ } from "svelte-i18n";
     import PhotoGallery from "../photo_gallery.svelte";
 
@@ -87,9 +88,9 @@
                     ><i class="fa fa-location-dot mr-1"></i>
                     {wp.lat.toFixed(5)}, {wp.lon.toFixed(5)}</span
                 >
-                <p class="whitespace-pre-line">
-                    {@html wp.description}
-                </p>
+                <div class="whitespace-pre-line">
+                    {@html sanitizeHTML(wp.description)}
+                </div>
             </div>
         </div>
     {/each}

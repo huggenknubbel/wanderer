@@ -1,8 +1,8 @@
 <script lang="ts">
     import { page } from "$app/state";
-    import { profile_follows_index } from "$lib/stores/profile_store.js";
-    import { show_toast } from "$lib/stores/toast_store.svelte.js";
-    import { APIError } from "$lib/util/api_util.js";
+    import { profile_follows_index } from "#lib/stores/profile_store.ts";
+    import { show_toast } from "#lib/stores/toast_store.svelte.ts";
+    import { APIError } from "#lib/util/api_util.ts";
     import { untrack } from "svelte";
     import { _ } from "svelte-i18n";
     let { data } = $props();
@@ -21,11 +21,19 @@
         totalPages: data.follows.totalPages,
     });
 
+    // `next` decides when the backend sends it, older backends only send totalPages
+    function hasMore(): boolean {
+        if ("next" in follows) {
+            return !!follows.next;
+        }
+        return pagination.page < pagination.totalPages;
+    }
+
     async function onListScroll(e: Event) {
         if (
             window.innerHeight + window.scrollY >=
                 0.8 * document.body.offsetHeight &&
-            pagination.page !== pagination.totalPages &&
+            hasMore() &&
             !loading
         ) {
             loading = true;
@@ -35,15 +43,27 @@
     }
 
     async function loadNextPage() {
-        pagination.page += 1;
+        const nextPage = pagination.page + 1;
+        // Navigating to another list replaces `follows`; a response for the
+        // old one must not overwrite it or its cursor
+        const list = follows;
         try {
-            follows = await profile_follows_index(
+            const next = await profile_follows_index(
                 page.params.handle!,
                 page.params.type as "followers" | "following",
-                pagination.page,
+                nextPage,
                 fetch,
+                list.next || undefined,
             );
+            if (follows !== list) {
+                return;
+            }
+            follows = { ...next, items: [...list.items, ...next.items] };
+            pagination.page = nextPage;
         } catch (e) {
+            if (follows !== list) {
+                return;
+            }
             if (e instanceof APIError) {
                 show_toast({
                     icon: "close",

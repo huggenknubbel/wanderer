@@ -1,6 +1,6 @@
-import type { Comment } from '$lib/models/comment';
-import { handleError } from '$lib/util/api_util';
-import { json, type RequestEvent } from '@sveltejs/kit';
+import type { Comment } from '#lib/models/comment.ts';
+import { handleError } from '#lib/util/api_util.ts';
+import type { RequestEvent } from '@sveltejs/kit';
 
 /**
  * @swagger
@@ -19,6 +19,11 @@ import { json, type RequestEvent } from '@sveltejs/kit';
  *         name: page
  *         schema:
  *           type: integer
+ *       - in: query
+ *         name: cursor
+ *         description: The `next` value of the previous page
+ *         schema:
+ *           type: string
  *       - in: query
  *         name: perPage
  *         schema:
@@ -49,7 +54,7 @@ export async function GET(event: RequestEvent) {
             method: "GET",
             fetch: event.fetch,
         })
-        return json(comments)
+        return Response.json(comments)
     } catch (e) {
         return handleError(e)
     }

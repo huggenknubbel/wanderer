@@ -9,8 +9,8 @@
 </script>
 
 <script lang="ts">
-    import Modal from "$lib/components/base/modal.svelte";
-    import Select from "$lib/components/base/select.svelte";
+    import Modal from "#lib/components/base/modal.svelte";
+    import Select from "#lib/components/base/select.svelte";
     import CategoryPicker, {
         type CategoryPickerSelection,
     } from "./category_picker.svelte";
@@ -29,6 +29,9 @@
         initialDifficulty,
         onapply,
     }: Props = $props();
+
+    const uid = $props.id();
+    const modalId = `trail-bulk-edit-modal-${uid}`;
 
     let modal: Modal;
     let applyCategory = $state(false);
@@ -95,7 +98,7 @@
 </script>
 
 <Modal
-    id="trail-bulk-edit-modal"
+    id={modalId}
     title={$_("adjust")}
     size="md:min-w-sm"
     bind:this={modal}
